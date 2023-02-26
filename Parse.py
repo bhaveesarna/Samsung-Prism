@@ -79,3 +79,9 @@ class function:
         s += ')'
         return s
 
+    def generate_bind_text(self, filename):
+        bind_text = f'PYBIND11_MODULE({filename}, m){{\nm.def(\"{self.name}\",&{self.name})\n}}'
+        return bind_text
+
+    
+

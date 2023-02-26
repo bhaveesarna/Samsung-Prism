@@ -13,10 +13,10 @@ gen.write_Quicktest(time_limit, hf_name)
 
 
 t = Test('Positive','FactorialTest')
-t.add_assertion("EXPECT_EQ",['120','factorial(5)'])
-t.add_assertion("EXPECT_EQ",['24','factorial(4)'])
-t.add_assertion("EXPECT_EQ",['6','factorial(3)'])
-t.add_assertion("EXPECT_EQ",['40320','factorial(8)'])
+t.add_assertion("EXPECT_EQ",['120','Factorial(5)'])
+t.add_assertion("EXPECT_EQ",['24','Factorial(4)'])
+t.add_assertion("EXPECT_EQ",['6','Factorial(3)'])
+t.add_assertion("EXPECT_EQ",['40320','Factorial(8)'])
 gen.write_test(t)
 
 
