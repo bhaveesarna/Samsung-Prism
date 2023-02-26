@@ -33,8 +33,8 @@ def predictCaseVals(func:function):
                     cases_to_add.append(("BVA","Autotest",func,int(j)))
                     cases_to_add.append(("BVA","Autotest",func,int(j)+1))
 
-        cases_to_add.append(("Positive","Autotest",func,random.randint(0,100)))
-        cases_to_add.append(("Negative","Autotest",func,random.randint(-1*100,0)))
+        cases_to_add.append(("Positive","Autotest",func,random.randint(0,10)))
+        cases_to_add.append(("Negative","Autotest",func,random.randint(-1*10,0)))
         if checkDuplicate(cases_to_add,func,0):
             cases_to_add.append(("Zero","Autotest",func,0))
 
@@ -64,16 +64,19 @@ def createCases(func):
                 ass = "EXPECT_TRUE"
             else:
                 ass = "EXPECT_FALSE"
+            print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
             t.add_assertion(ass,[f'{func.name}({ip})'])
         elif(func.ret == "string"):
             print("For function",func.name, "returning ",func.ret)
             ass = "EXPECT_EQ"
-            param = input(f"Enter output parameter for {ass}: ")
+            param = str(globals()[func.name.strip()](ip))
+            print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
             t.add_assertion(ass,[param,f'{func.name}({ip})'])
         else:
             print("For function",func.name, "returning ",func.ret)
             ass = "EXPECT_EQ"
-            param = input(f"Enter output parameter for {ass}: ")
+            param = str(globals()[func.name.strip()](ip))
+            print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
             t.add_assertion(ass,[param,f'{func.name}({ip})'])
             
         # if isinstance(ip, int):

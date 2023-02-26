@@ -67,7 +67,6 @@ bool IsPrime(int n) {
 }
 
 PYBIND11_MODULE(module_name, handle){
-    handle.doc() = "this is doc string";
     handle.def("Factorial", &Factorial);
     handle.def("IsPrime", &IsPrime);
 }
