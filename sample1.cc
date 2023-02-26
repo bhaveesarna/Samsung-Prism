@@ -29,7 +29,8 @@
 
 // A sample program demonstrating using Google C++ testing framework.
 
-#include "sample1.h"
+// #include "sample1.h"
+#include<pybind11/pybind11.h>
 
 // Returns n! (the factorial of n).  For negative n, n! is defined to be 1.
 int Factorial(int n) {
@@ -63,4 +64,10 @@ bool IsPrime(int n) {
 
   // n has no integer factor in the range (1, n), and thus is prime.
   return true;
+}
+
+PYBIND11_MODULE(module_name, handle){
+    handle.doc() = "this is doc string";
+    handle.def("Factorial", &Factorial);
+    handle.def("IsPrime", &IsPrime);
 }

@@ -6,7 +6,7 @@ protected:
 void SetUp() override { start_time_ = time(nullptr); }
 void TearDown() override {
 	const time_t end_time = time(nullptr);
-EXPECT_TRUE(end_time - start_time_ <= 20) << "The test took too long.";
+EXPECT_TRUE(end_time - start_time_ <= 5) << "The test took too long.";
 }
 };
  TEST(FactorialTest, Positive){
@@ -20,27 +20,24 @@ EXPECT_EQ(false, IsPrime(10));
 EXPECT_EQ(true, IsPrime(3));
 }
  TEST(Autotest, Positive){
-sdfsfgdsfg(32,  Factorial(8769811062660614404));
+EXPECT_EQ(1,  Factorial(0));
 }
  TEST(Autotest, Negative){
-sgfdsg(3,  Factorial(-7207655912689697280));
-}
- TEST(Autotest, Zero){
-sgdfgfd(3,  Factorial(0));
+EXPECT_EQ(1,  Factorial(-7));
 }
  TEST(Autotest, Content){
-sdfasfsdf(3,  IsPrime(0));
+EXPECT_FALSE(False,  IsPrime(0));
 }
  TEST(Autotest, Content){
-ffdgdsfg(4,  IsPrime(1));
+EXPECT_FALSE(False,  IsPrime(1));
 }
  TEST(Autotest, Content){
-fdgdfsg(3,  IsPrime(2));
+EXPECT_TRUE(True,  IsPrime(2));
 }
  TEST(Autotest, Positive){
-sgfdsgsdf(3,  IsPrime(6840391490792338566));
+EXPECT_FALSE(False,  IsPrime(4));
 }
  TEST(Autotest, Negative){
-fgdsgdf(3,  IsPrime(-1128023679378246538));
+EXPECT_FALSE(False,  IsPrime(0));
 }
 }

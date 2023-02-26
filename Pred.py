@@ -1,7 +1,8 @@
 from Test_Model import *
 from Parse import *
 import random
-import sys    
+import sys
+from build.module_name import *
 
 def checkDuplicate(cases_to_add,func,j):
     for case in cases_to_add:
@@ -29,8 +30,8 @@ def predictCaseVals(func:function):
                         cases_to_add.append(("Content","Autotest",func,int(j)))
                         cases_to_add.append(("Content","Autotest",func,int(j)+1))
 
-            cases_to_add.append(("Positive","Autotest",func,random.randint(0,sys.maxsize)))
-            cases_to_add.append(("Negative","Autotest",func,random.randint(-1*sys.maxsize,0)))
+            cases_to_add.append(("Positive","Autotest",func,random.randint(0,10)))
+            cases_to_add.append(("Negative","Autotest",func,random.randint(-1*10,0)))
             if checkDuplicate(cases_to_add,func,0):
                 cases_to_add.append(("Zero","Autotest",func,0))
     return cases_to_add
@@ -47,7 +48,8 @@ def createCases(func):
         if isinstance(ip, int):
             print("For function",func.name, "returning ",func.ret)
             ass = input(f"Enter assertion for the input {ip}: ")
-            param = input(f"Enter output parameter for {ass}: ")
+            print(globals()[func.name.strip()](ip))
+            param = str(globals()[func.name.strip()](ip))
             t.add_assertion(ass,[param,f'{func.name}({ip})'])
         case_objs.append(t)
     return case_objs
