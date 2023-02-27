@@ -1,4 +1,4 @@
-#include "sample1.h"
+#include "sample_files/sample2.h"
 #include "gtest/gtest.h"
 namespace {
 class QuickTest : public testing::Test {
@@ -20,10 +20,10 @@ EXPECT_EQ(false, IsPrime(10));
 EXPECT_EQ(true, IsPrime(3));
 }
  TEST(Autotest, Positive){
-EXPECT_EQ(720,  Factorial(6));
+EXPECT_EQ(5040,  Factorial(7));
 }
  TEST(Autotest, Negative){
-EXPECT_EQ(1,  Factorial(-6));
+EXPECT_EQ(1,  Factorial(-5));
 }
  TEST(Autotest, Zero){
 EXPECT_EQ(1,  Factorial(0));
@@ -38,10 +38,10 @@ EXPECT_TRUE( IsPrime(2));
 EXPECT_TRUE( IsPrime(3));
 }
  TEST(Autotest, Positive){
-EXPECT_FALSE( IsPrime(8));
+EXPECT_FALSE( IsPrime(4));
 }
  TEST(Autotest, Negative){
-EXPECT_FALSE( IsPrime(-4));
+EXPECT_FALSE( IsPrime(-9));
 }
  TEST(Autotest, Zero){
 EXPECT_FALSE( IsPrime(0));

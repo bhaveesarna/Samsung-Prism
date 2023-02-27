@@ -3,6 +3,7 @@ from Parse import *
 import random
 import sys
 from build.module_name import *
+from build.module_name2 import *
 import string
 
 
@@ -59,7 +60,7 @@ def createCases(func):
         ip = case[3]
         if(func.ret == "bool"):
             print("For function",func.name, "returning ",func.ret)
-            param = param = str(globals()[func.name.strip()](ip))
+            param = str(globals()[func.name.strip()](ip))
             if param == 'True':
                 ass = "EXPECT_TRUE"
             else:
