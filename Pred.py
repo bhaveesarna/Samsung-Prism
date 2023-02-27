@@ -4,6 +4,8 @@ import random
 import sys
 from build.module_name import *
 from build.module_name2 import *
+from build.module_name3 import *
+from build.module_name4 import *
 import string
 import re
 
