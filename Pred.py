@@ -1,6 +1,8 @@
 from Test_Model import *
 from Parse import *
 import random
+import sys
+from build.module_name import *
 import string
 import re
 
@@ -56,8 +58,8 @@ def predictCaseVals(func:function):
                 if j and j.isdigit() and checkDuplicate(cases_to_add,func,j):
                     cases_to_add.append(("switchcase","Autotest",func,int(j)))
 
-        cases_to_add.append(("Positive","Autotest",func,random.randint(0,100)))
-        cases_to_add.append(("Negative","Autotest",func,random.randint(-1*100,0)))
+        cases_to_add.append(("Positive","Autotest",func,random.randint(0,10)))
+        cases_to_add.append(("Negative","Autotest",func,random.randint(-1*10,0)))
         if checkDuplicate(cases_to_add,func,0):
             cases_to_add.append(("Zero","Autotest",func,0))
 
@@ -82,21 +84,24 @@ def createCases(func):
         ip = case[3]
         if(func.ret == "bool"):
             print("For function",func.name, "returning ",func.ret)
-            param = input(f"Enter output parameter for: ")
+            param = param = str(globals()[func.name.strip()](ip))
             if param == 'True':
                 ass = "EXPECT_TRUE"
             else:
                 ass = "EXPECT_FALSE"
+            print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
             t.add_assertion(ass,[f'{func.name}({ip})'])
         elif(func.ret == "string"):
             print("For function",func.name, "returning ",func.ret)
             ass = "EXPECT_EQ"
-            param = input(f"Enter output parameter for {ass}: ")
+            param = str(globals()[func.name.strip()](ip))
+            print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
             t.add_assertion(ass,[param,f'{func.name}({ip})'])
         else:
             print("For function",func.name, "returning ",func.ret)
             ass = "EXPECT_EQ"
-            param = input(f"Enter output parameter for {ass}: ")
+            param = str(globals()[func.name.strip()](ip))
+            print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
             t.add_assertion(ass,[param,f'{func.name}({ip})'])
             
         # if isinstance(ip, int):
