@@ -5,6 +5,12 @@ import sys
 from build.module_name import *
 from build.module_name2 import *
 import string
+import re
+
+TOKENS = [':','\(','\)','/','{','}','<','>','==','<=','>=','\s']
+TOKEN_SPLITTER = "|".join(TOKENS)
+
+
 
 
 
@@ -23,16 +29,35 @@ def predictCaseVals(func:function):
         #             cases_to_add.append(("Content","Autotest",func,[[int(i)-1,int(i),int(i)+1]*len(func.args["int"])]))
         # else:
         conditions = []
+        loops = []
+        switches = []
         lines = func.content.split(';')
         for idx in range(len(lines)):
             if 'if' in lines[idx]:
                 conditions.append(lines[idx])
+            if 'for' in lines[idx]:
+                loops.append(lines[idx])
+            if 'while' in lines[idx]:
+                loops.append(lines[idx])
+            if 'case' in lines[idx]:
+                switches.append(lines[idx])
         for i in conditions:
-            for j in i.split():
-                if j.isdigit() and (i.index('if') < i.index(j)) and checkDuplicate(cases_to_add,func,j):
+            for j in re.split(TOKEN_SPLITTER,i):
+                if j and j.isdigit() and (i.index('if') < i.index(j)):
                     cases_to_add.append(("BVA","Autotest",func,int(j)-1))
                     cases_to_add.append(("BVA","Autotest",func,int(j)))
                     cases_to_add.append(("BVA","Autotest",func,int(j)+1))
+        for i in loops:
+            for j in re.split(TOKEN_SPLITTER,i):
+                if j and j.isdigit() and checkDuplicate(cases_to_add,func,j):
+                    cases_to_add.append(("loop","Autotest",func,int(j)-1))
+                    cases_to_add.append(("loop","Autotest",func,int(j)))
+                    cases_to_add.append(("loop","Autotest",func,int(j)+1))
+        
+        for i in switches:
+            for j in re.split(TOKEN_SPLITTER,i):
+                if j and j.isdigit() and checkDuplicate(cases_to_add,func,j):
+                    cases_to_add.append(("switchcase","Autotest",func,int(j)))
 
         cases_to_add.append(("Positive","Autotest",func,random.randint(0,10)))
         cases_to_add.append(("Negative","Autotest",func,random.randint(-1*10,0)))
