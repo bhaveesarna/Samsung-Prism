@@ -9,7 +9,7 @@ cd build && cmake -A x64 .. && cmake --build . --config Release
 cd ..
 python -u Main.py
 
-Note: for building on windows, visual studio 2019 or newer is required
+Note: for building on windows, visual studio 2019 or newer and cmake is required
 
 
 for linux:
