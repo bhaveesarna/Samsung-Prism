@@ -44,6 +44,6 @@ bool find_no(int n) {
 
 
 
-PYBIND11_MODULE(module_name2, handle){
+PYBIND11_MODULE(sample2, handle){
     handle.def("find_no", &find_no);
 }

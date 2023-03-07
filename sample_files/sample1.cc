@@ -66,7 +66,7 @@ bool IsPrime(int n) {
   return true;
 }
 
-PYBIND11_MODULE(module_name, handle){
+PYBIND11_MODULE(sample1, handle){
     handle.def("Factorial", &Factorial);
     handle.def("IsPrime", &IsPrime);
 }

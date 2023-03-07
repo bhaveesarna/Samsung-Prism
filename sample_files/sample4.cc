@@ -14,6 +14,6 @@ bool find_while(int n) {
 
 
 
-PYBIND11_MODULE(module_name4, handle){
+PYBIND11_MODULE(sample4, handle){
     handle.def("find_while", &find_while);
 }

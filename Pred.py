@@ -1,11 +1,17 @@
 from Test_Model import *
 from Parse import *
 import random
-import sys
-from build.module_name import *
-from build.module_name2 import *
-from build.module_name3 import *
-from build.module_name4 import *
+import os
+buildpath = "build."
+if os.name == 'nt':
+    buildpath = buildpath+"Release."
+import importlib
+import config
+for file in config.file_list:
+    mod = importlib.__import__(buildpath+os.path.splitext(file)[0], globals=globals(), locals=locals(), fromlist="*")
+    globals()[os.path.splitext(file)[0]] = mod
+    del mod
+print(globals().keys())
 import string
 import re
 
@@ -87,7 +93,7 @@ def createCases(func):
         ip = case[3]
         if(func.ret == "bool"):
             print("For function",func.name, "returning ",func.ret)
-            param = str(globals()[func.name.strip()](ip))
+            param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
             if param == 'True':
                 ass = "EXPECT_TRUE"
             else:
@@ -97,13 +103,13 @@ def createCases(func):
         elif(func.ret == "string"):
             print("For function",func.name, "returning ",func.ret)
             ass = "EXPECT_EQ"
-            param = str(globals()[func.name.strip()](ip))
+            param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
             print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
             t.add_assertion(ass,[param,f'{func.name}({ip})'])
         else:
             print("For function",func.name, "returning ",func.ret)
             ass = "EXPECT_EQ"
-            param = str(globals()[func.name.strip()](ip))
+            param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
             print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
             t.add_assertion(ass,[param,f'{func.name}({ip})'])
             

@@ -23,6 +23,6 @@ int operate(int mode) {
   return result;
 }
 
-PYBIND11_MODULE(module_name3, handle){
+PYBIND11_MODULE(sample3, handle){
     handle.def("operate", &operate);
 }

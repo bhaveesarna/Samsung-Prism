@@ -1,8 +1,8 @@
 from cc_generator import CCGenerator
 from Parse import *
 from Test_Model import *
-from Pred import *
 import os
+import config
 
 path_str=""
 input_file_or_dir = input("File/Directory to be parsed: ")
@@ -16,8 +16,10 @@ elif os.path.isfile(input_file_or_dir):
 else:
     print("not a file or directory")
     exit()
-
+config.file_list = pf_names
+from Pred import *
 for pf_name in pf_names:
+    config.current_file = os.path.splitext(pf_name)[0]
     pf_name = path_str + pf_name
     hf_name = pf_name[:-3] + '.h'
     tf_name = pf_name[:-3] + '_UNITTEST.cc'
