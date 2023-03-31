@@ -1,3 +1,4 @@
+from Multiple_args import Multiple_args
 from Test_Model import *
 from Parse import *
 import random
@@ -11,7 +12,7 @@ for file in config.file_list:
     mod = importlib.__import__(buildpath+os.path.splitext(file)[0], globals=globals(), locals=locals(), fromlist="*")
     globals()[os.path.splitext(file)[0]] = mod
     del mod
-print(globals().keys())
+# print(globals().keys())
 import string
 import re
 
@@ -88,6 +89,7 @@ def predictCaseVals(func:function):
 
 def createCases(func):
     cases_to_add = predictCaseVals(func)
+    # print(cases_to_add)
     case_objs = []
     for case in cases_to_add:
         t = Test(case[0],case[1])
@@ -95,7 +97,11 @@ def createCases(func):
         ip = case[3]
         if(func.ret == "bool"):
             print("For function",func.name, "returning ",func.ret)
-            param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
+            if type(ip) is tuple:
+                param = str(getattr(globals()[config.current_file], func.name.strip())(*ip))
+            else:
+                param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
+            
             if param == 'True':
                 ass = "EXPECT_TRUE"
             else:
@@ -105,13 +111,19 @@ def createCases(func):
         elif(func.ret == "string"):
             print("For function",func.name, "returning ",func.ret)
             ass = "EXPECT_EQ"
-            param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
+            if type(ip) is tuple:
+                param = str(getattr(globals()[config.current_file], func.name.strip())(*ip))
+            else:
+                param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
             print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
             t.add_assertion(ass,[param,f'{func.name}({ip})'])
         else:
             print("For function",func.name, "returning ",func.ret)
             ass = "EXPECT_EQ"
-            param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
+            if type(ip) is tuple:
+                param = str(getattr(globals()[config.current_file], func.name.strip())(*ip))
+            else:
+                param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
             print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
             t.add_assertion(ass,[param,f'{func.name}({ip})'])
             
