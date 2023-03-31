@@ -18,70 +18,72 @@ import re
 TOKENS = [':','\(','\)','/','{','}','<','>','==','<=','>=','\s']
 TOKEN_SPLITTER = "|".join(TOKENS)
 
-
-
-
-
-def checkDuplicate(cases_to_add,func,j):
-    for case in cases_to_add:
-        if case[2].name == func.name and int(case[3])== int(j):
-            return False
-    return True
-
 def predictCaseVals(func:function):
-    cases_to_add = []
-    if "int" in func.args or "float" in func.args:
-        # if len(func.args["int"]) > 1:
-        #     for i in func.content:
-        #         if  i.isdigit():
-        #             cases_to_add.append(("Content","Autotest",func,[[int(i)-1,int(i),int(i)+1]*len(func.args["int"])]))
-        # else:
-        conditions = []
-        loops = []
-        switches = []
-        lines = func.content.split(';')
-        for idx in range(len(lines)):
-            if 'if' in lines[idx]:
-                conditions.append(lines[idx])
-            if 'for' in lines[idx]:
-                loops.append(lines[idx])
-            if 'while' in lines[idx]:
-                loops.append(lines[idx])
-            if 'case' in lines[idx]:
-                switches.append(lines[idx])
-        for i in conditions:
-            for j in re.split(TOKEN_SPLITTER,i):
-                if j and j.isdigit() and (i.index('if') < i.index(j)):
-                    cases_to_add.append(("BVA","Autotest",func,int(j)-1))
-                    cases_to_add.append(("BVA","Autotest",func,int(j)))
-                    cases_to_add.append(("BVA","Autotest",func,int(j)+1))
-        for i in loops:
-            for j in re.split(TOKEN_SPLITTER,i):
-                if j and j.isdigit() and checkDuplicate(cases_to_add,func,j):
-                    cases_to_add.append(("loop","Autotest",func,int(j)-1))
-                    cases_to_add.append(("loop","Autotest",func,int(j)))
-                    cases_to_add.append(("loop","Autotest",func,int(j)+1))
-        
-        for i in switches:
-            for j in re.split(TOKEN_SPLITTER,i):
-                if j and j.isdigit() and checkDuplicate(cases_to_add,func,j):
-                    cases_to_add.append(("switchcase","Autotest",func,int(j)))
+    if len(func.args_list) == 1:
+        cases_to_add = []
+        nums_done = set()
+        if func.args_list[0][0] == "int" or func.args_list[0][0] == "float":
+            conditions = []
+            loops = []
+            switches = []
+            lines = func.content.split(';')
+            for idx in range(len(lines)):
+                if 'if' in lines[idx]:
+                    conditions.append(lines[idx])
+                if 'for' in lines[idx]:
+                    loops.append(lines[idx])
+                if 'while' in lines[idx]:
+                    loops.append(lines[idx])
+                if 'case' in lines[idx]:
+                    switches.append(lines[idx])
+            for i in conditions:
+                for j in re.split(TOKEN_SPLITTER,i):
+                    if j and j.isdigit() and (i.index('if') < i.index(j)):
+                        if int(j)-1 not in nums_done:
+                            cases_to_add.append(("BVA","Autotest",func,int(j)-1)) 
+                            nums_done.add(int(j)-1)
+                        if int(j) not in nums_done:
+                            cases_to_add.append(("BVA","Autotest",func,int(j)))
+                            nums_done.add(int(j))
+                        if int(j)+1 not in nums_done:
+                            cases_to_add.append(("BVA","Autotest",func,int(j)+1))
+                            nums_done.add(int(j)+1)
+            for i in loops:
+                for j in re.split(TOKEN_SPLITTER,i):
+                    if j and j.isdigit():
+                        if int(j)-1 not in nums_done:
+                            cases_to_add.append(("loop","Autotest",func,int(j)-1))
+                            nums_done.add(int(j)-1)
+                        if int(j) not in nums_done:
+                            cases_to_add.append(("loop","Autotest",func,int(j)))
+                            nums_done.add(int(j))
+                        if int(j)+1 not in nums_done:
+                            cases_to_add.append(("loop","Autotest",func,int(j)+1))
+                            nums_done.add(int(j)+1)
+            
+            for i in switches:
+                for j in re.split(TOKEN_SPLITTER,i):
+                    if j and j.isdigit():
+                        cases_to_add.append(("switchcase","Autotest",func,int(j)))
 
-        cases_to_add.append(("Positive","Autotest",func,random.randint(0,10)))
-        cases_to_add.append(("Negative","Autotest",func,random.randint(-1*10,0)))
-        if checkDuplicate(cases_to_add,func,0):
-            cases_to_add.append(("Zero","Autotest",func,0))
+            cases_to_add.append(("Positive","Autotest",func,random.randint(0,100)))
+            cases_to_add.append(("Negative","Autotest",func,random.randint(-1*100,0)))
+            if 0 not in nums_done:
+                cases_to_add.append(("Zero","Autotest",func,0))
 
-    elif "string" in  func.args:
-        ip_string = ''.join(random.choices(string.ascii_uppercase, k=random.randint(5,10)))
-        cases_to_add.append(("Upper","Autotest",func,ip_string))
-        ip_string = ''.join(random.choices(string.ascii_lowercase, k=random.randint(5,10)))
-        cases_to_add.append(("Lower","Autotest",func,ip_string))
-        ip_string = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=random.randint(5,10)))
-        cases_to_add.append(("Mixed","Autotest",func,ip_string))
+        elif func.args_list[0][0] == "string":
+            ip_string = ''.join(random.choices(string.ascii_uppercase, k=random.randint(5,10)))
+            cases_to_add.append(("Upper","Autotest",func,ip_string))
+            ip_string = ''.join(random.choices(string.ascii_lowercase, k=random.randint(5,10)))
+            cases_to_add.append(("Lower","Autotest",func,ip_string))
+            ip_string = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=random.randint(5,10)))
+            cases_to_add.append(("Mixed","Autotest",func,ip_string))
+
+    else:
+        mc = Multiple_args(func)
+        cases_to_add = mc.cases()
 
     return cases_to_add
-
 
 
 def createCases(func):

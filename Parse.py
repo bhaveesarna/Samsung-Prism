@@ -57,15 +57,17 @@ class parser:
 class function:
     def __init__(self,name,argtypes,argnames,content,ret) -> None:
         self.name = name
-        self.args = {}
+        self.args = {} #args as dict
+        self.args_list = [] #args as list
         self.content = content
         self.ret = ret
 
         for i in range(len(argnames)):
             if argtypes[i] in self.args:
-                self.args[argtypes[i]].append([argnames[i]])            
+                self.args[argtypes[i]].append(argnames[i])            
             else:
                 self.args[argtypes[i]] = [argnames[i]]
+            self.args_list.append((argtypes[i],argnames[i])) 
 
     def head_serialize(self):
         s = f'{self.ret} {self.name}('
