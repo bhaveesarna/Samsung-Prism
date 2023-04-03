@@ -73,7 +73,7 @@ class Multiple_args:
                     chars.append(j)
                     chars.append(chr(ord(j)-1))
                     chars.append(chr(ord(j)+1))
-        chars.append(chr(ord(random.randint(97,122))))
+        chars.append(chr(random.randint(97,122)))
         chars = list(set(chars))
         return chars
         

@@ -95,7 +95,7 @@ def predictCaseVals(func:function):
                         cases_to_add.append(("BVA_more_char","Autotest",func,chr(ord(j)+1)))   
                         cases_to_add.append(("BVA_less_char","Autotest",func,chr(ord(j)-1)))  
         
-            cases_to_add.append(("Random_char","Autotest",func,chr(ord(random.randint(97,122)))))  
+            cases_to_add.append(("Random_char","Autotest",func,chr(random.randint(97,122))))  
              
                          
         elif func.args_list[0][0] == "float":
