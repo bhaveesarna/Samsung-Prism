@@ -81,6 +81,7 @@ def predictCaseVals(func:function):
             cases_to_add.append(("Mixed","Autotest",func,ip_string))
 
         elif func.args_list[0][0] == "char":
+            chars = []
             conditions = []
             lines = func.content.split(';')
             for idx in range(len(lines)):
@@ -88,14 +89,14 @@ def predictCaseVals(func:function):
                     conditions.append(lines[idx])
             for i in conditions:
                 for j in re.split(TOKEN_SPLITTER,i):
-                    if j and (i.index('if') < i.index(j)) and re.match("'.'",j) and not j.isdigit():
+                    if j and (i.index('if') < i.index(j)) and len(j.strip("'")) == 1 and not j.isdigit():
                         j = j.strip("'")
                         cases_to_add.append(("BVA_char","Autotest",func,f"'{j}'"))
                         cases_to_add.append(("BVA_more_char","Autotest",func,f"'{chr(ord(j)+1)}'"))   
                         cases_to_add.append(("BVA_less_char","Autotest",func,f"'{chr(ord(j)-1)}'")) 
                 
             cases_to_add.append(("Random_char","Autotest",func,f"'{chr(random.randint(97,122))}'"))
-             
+                
                          
         elif func.args_list[0][0] == "float":
             def is_float(string):
