@@ -22,8 +22,8 @@ TOKEN_SPLITTER = "|".join(TOKENS)
 def predictCaseVals(func:function):
     if len(func.args_list) == 1:
         cases_to_add = []
-        nums_done = set()
-        if func.args_list[0][0] == "int" or func.args_list[0][0] == "float":
+        if func.args_list[0][0] == "int":
+            nums_done = set()
             conditions = []
             loops = []
             switches = []
@@ -41,31 +41,31 @@ def predictCaseVals(func:function):
                 for j in re.split(TOKEN_SPLITTER,i):
                     if j and j.isdigit() and (i.index('if') < i.index(j)):
                         if int(j)-1 not in nums_done:
-                            cases_to_add.append(("BVA","Autotest",func,int(j)-1)) 
+                            cases_to_add.append(("BVA","BVA_less",func,int(j)-1)) 
                             nums_done.add(int(j)-1)
                         if int(j) not in nums_done:
-                            cases_to_add.append(("BVA","Autotest",func,int(j)))
+                            cases_to_add.append(("BVA","BVA_equal",func,int(j)))
                             nums_done.add(int(j))
                         if int(j)+1 not in nums_done:
-                            cases_to_add.append(("BVA","Autotest",func,int(j)+1))
+                            cases_to_add.append(("BVA","BVA_greater",func,int(j)+1))
                             nums_done.add(int(j)+1)
             for i in loops:
                 for j in re.split(TOKEN_SPLITTER,i):
                     if j and j.isdigit():
                         if int(j)-1 not in nums_done:
-                            cases_to_add.append(("loop","Autotest",func,int(j)-1))
+                            cases_to_add.append(("loop","loop_less",func,int(j)-1))
                             nums_done.add(int(j)-1)
                         if int(j) not in nums_done:
-                            cases_to_add.append(("loop","Autotest",func,int(j)))
+                            cases_to_add.append(("loop","loop_equal",func,int(j)))
                             nums_done.add(int(j))
                         if int(j)+1 not in nums_done:
-                            cases_to_add.append(("loop","Autotest",func,int(j)+1))
+                            cases_to_add.append(("loop","loop_greater",func,int(j)+1))
                             nums_done.add(int(j)+1)
             
             for i in switches:
                 for j in re.split(TOKEN_SPLITTER,i):
                     if j and j.isdigit():
-                        cases_to_add.append(("switchcase","Autotest",func,int(j)))
+                        cases_to_add.append(("switchcase",f"case_{str(j)}",func,int(j)))
 
             cases_to_add.append(("Positive","Autotest",func,random.randint(0,100)))
             cases_to_add.append(("Negative","Autotest",func,random.randint(-1*100,0)))
@@ -81,21 +81,46 @@ def predictCaseVals(func:function):
             cases_to_add.append(("Mixed","Autotest",func,ip_string))
 
         elif func.args_list[0][0] == "char":
-            chars = []
+            chars_done = set()
             conditions = []
+            loops = []
+            switches = []
             lines = func.content.split(';')
             for idx in range(len(lines)):
                 if 'if' in lines[idx]:
                     conditions.append(lines[idx])
+                if 'for' in lines[idx]:
+                    loops.append(lines[idx])
+                if 'while' in lines[idx]:
+                    loops.append(lines[idx])
+                if 'case' in lines[idx]:
+                    switches.append(lines[idx])
             for i in conditions:
                 for j in re.split(TOKEN_SPLITTER,i):
                     if j and (i.index('if') < i.index(j)) and len(j.strip("'")) == 1 and not j.isdigit():
                         j = j.strip("'")
-                        cases_to_add.append(("BVA_char","Autotest",func,f"'{j}'"))
-                        cases_to_add.append(("BVA_more_char","Autotest",func,f"'{chr(ord(j)+1)}'"))   
-                        cases_to_add.append(("BVA_less_char","Autotest",func,f"'{chr(ord(j)-1)}'")) 
+                        cases_to_add.append(("BVA","BVA_char",func,f"'{j}'"))
+                        cases_to_add.append(("BVA","BVA_more_char",func,f"'{chr(ord(j)+1)}'"))   
+                        cases_to_add.append(("BVA","BVA_less_char",func,f"'{chr(ord(j)-1)}'"))
+            for i in loops:
+                for j in re.split(TOKEN_SPLITTER,i):
+                    if j and j.isdigit():
+                        if int(j)-1 not in chars_done:
+                            cases_to_add.append(("loop","loop_less",func,f"'{chr(ord(j)-1)}'"))
+                            chars_done.add(int(j)-1)
+                        if int(j) not in chars_done:
+                            cases_to_add.append(("loop","loop_equal",func,f"'{chr(ord(j))}'"))
+                            chars_done.add(int(j))
+                        if int(j)+1 not in chars_done:
+                            cases_to_add.append(("loop","loop_greater",func,f"'{chr(ord(j)+1)}'"))
+                            chars_done.add(int(j)+1)
+            for i in switches:
+                for j in re.split(TOKEN_SPLITTER,i):
+                    if j and (i.index('case') < i.index(j)) and len(j.strip("'")) == 1 and not j.isdigit():
+                        j = j.strip("'")
+                        cases_to_add.append(("switchcase",f"case_{chr(ord(j))}",func,f"'{chr(ord(j))}'"))
                 
-            cases_to_add.append(("Random_char","Autotest",func,f"'{chr(random.randint(97,122))}'"))
+            cases_to_add.append(("switchcase","Random_char",func,f"'{chr(random.randint(97,122))}'"))
                 
                          
         elif func.args_list[0][0] == "float":
@@ -122,26 +147,26 @@ def predictCaseVals(func:function):
             for i in conditions:
                 for j in re.split(TOKEN_SPLITTER,i):
                     if j and is_float(j) and (i.index('if') < i.index(j)):
-                        cases_to_add.append(("BVA","Autotest",func,float(j)-random.random())) 
-                        cases_to_add.append(("BVA","Autotest",func,float(j)))
-                        cases_to_add.append(("BVA","Autotest",func,float(j)+random.random()))
+                        cases_to_add.append(("BVA","BVA_less",func,float(j)-random.random())) 
+                        cases_to_add.append(("BVA","BVA_equal",func,float(j)))
+                        cases_to_add.append(("BVA","BVA_greater",func,float(j)+random.random()))
             for i in loops:
                 for j in re.split(TOKEN_SPLITTER,i):
                     if j and j.isdigit():
                         if int(j)-1 not in nums_done:
-                            cases_to_add.append(("loop","Autotest",func,float(j)-random.random()))
+                            cases_to_add.append(("loop","loop_less",func,float(j)-random.random()))
                             nums_done.add(int(j)-1)
                         if int(j) not in nums_done:
-                            cases_to_add.append(("loop","Autotest",func,float(j)))
+                            cases_to_add.append(("loop","loop_equal",func,float(j)))
                             nums_done.add(int(j))
                         if int(j)+1 not in nums_done:
-                            cases_to_add.append(("loop","Autotest",func,float(j)+random.random()))
+                            cases_to_add.append(("loop","loop_greater",func,float(j)+random.random()))
                             nums_done.add(int(j)+1)
             
             for i in switches:
                 for j in re.split(TOKEN_SPLITTER,i):
                     if j and j.isdigit():
-                        cases_to_add.append(("switchcase","Autotest",func,float(j)))
+                        cases_to_add.append(("switchcase",f"case_{str(j)}",func,float(j)))
 
             cases_to_add.append(("Positive","Autotest",func,random.random()*100))
             cases_to_add.append(("Negative","Autotest",func,random.random()*-100))
@@ -175,7 +200,8 @@ def createCases(func):
             else:
                 ass = "EXPECT_FALSE"
             print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
-            t.add_assertion(ass,[f'{func.name}({ip})'])
+            print("testing:", str(ip).strip("(").strip(")"))
+            t.add_assertion(ass,[f'{func.name}({str(ip).strip("(").strip(")")})'])
         elif(func.ret == "string"):
             print("For function",func.name, "returning ",func.ret)
             ass = "EXPECT_EQ"
@@ -184,16 +210,19 @@ def createCases(func):
             else:
                 param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
             print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
-            t.add_assertion(ass,[param,f'{func.name}({ip})'])
+            t.add_assertion(ass,[f'{func.name}({str(ip).strip("(").strip(")")})'])
         else:
             print("For function",func.name, "returning ",func.ret)
             ass = "EXPECT_EQ"
             if type(ip) is tuple:
                 param = str(getattr(globals()[config.current_file], func.name.strip())(*ip))
             else:
-                param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
+                if isinstance(ip, str):
+                    param = str(getattr(globals()[config.current_file], func.name.strip())(ip.strip("'")))
+                else:
+                    param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
             print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
-            t.add_assertion(ass,[param,f'{func.name}({ip})'])
+            t.add_assertion(ass,[f'{func.name}({str(ip).strip("(").strip(")")})'])
             
         # if isinstance(ip, int):
         #     print("For function",func.name, "returning ",func.ret)

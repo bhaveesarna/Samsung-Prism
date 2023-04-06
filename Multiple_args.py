@@ -144,7 +144,9 @@ class Multiple_args:
 			product.append(item)
 		
 		cases_to_add = []
+		i=0
 		for p in product:
-			cases_to_add.append((("MultiArgs","Autotest",self.func,(p))))
+			i+=1
+			cases_to_add.append((("MultiArgs",f"Autotest_{i}",self.func,p)))
 		
 		return cases_to_add
