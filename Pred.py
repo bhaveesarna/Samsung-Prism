@@ -210,7 +210,7 @@ def createCases(func):
             else:
                 param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
             print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
-            t.add_assertion(ass,[f'{func.name}({str(ip).strip("(").strip(")")})'])
+            t.add_assertion(ass,[param, f'{func.name}({str(ip).strip("(").strip(")")})'])
         else:
             print("For function",func.name, "returning ",func.ret)
             ass = "EXPECT_EQ"
@@ -222,7 +222,7 @@ def createCases(func):
                 else:
                     param = str(getattr(globals()[config.current_file], func.name.strip())(ip))
             print(f"input = {ip} assertion = {ass} and test case parameter = {param}")
-            t.add_assertion(ass,[f'{func.name}({str(ip).strip("(").strip(")")})'])
+            t.add_assertion(ass,[param, f'{func.name}({str(ip).strip("(").strip(")")})'])
             
         # if isinstance(ip, int):
         #     print("For function",func.name, "returning ",func.ret)
