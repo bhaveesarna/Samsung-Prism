@@ -67,18 +67,18 @@ def predictCaseVals(func:function):
                     if j and j.isdigit():
                         cases_to_add.append(("switchcase",f"case_{str(j)}",func,int(j)))
 
-            cases_to_add.append(("Positive","Autotest",func,random.randint(0,100)))
-            cases_to_add.append(("Negative","Autotest",func,random.randint(-1*100,0)))
+            cases_to_add.append(("Autotest","Positive",func,random.randint(0,100)))
+            cases_to_add.append(("Autotest","Negative",func,random.randint(-1*100,0)))
             if 0 not in nums_done:
                 cases_to_add.append(("Zero","Autotest",func,0))
 
         elif func.args_list[0][0] == "string":
             ip_string = ''.join(random.choices(string.ascii_uppercase, k=random.randint(5,10)))
-            cases_to_add.append(("Upper","Autotest",func,ip_string))
+            cases_to_add.append(("Autotest","Upper",func,ip_string))
             ip_string = ''.join(random.choices(string.ascii_lowercase, k=random.randint(5,10)))
-            cases_to_add.append(("Lower","Autotest",func,ip_string))
+            cases_to_add.append(("Autotest","Lower",func,ip_string))
             ip_string = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=random.randint(5,10)))
-            cases_to_add.append(("Mixed","Autotest",func,ip_string))
+            cases_to_add.append(("Autotest","Mixed",func,ip_string))
 
         elif func.args_list[0][0] == "char":
             chars_done = set()
@@ -168,10 +168,10 @@ def predictCaseVals(func:function):
                     if j and j.isdigit():
                         cases_to_add.append(("switchcase",f"case_{str(j)}",func,float(j)))
 
-            cases_to_add.append(("Positive","Autotest",func,random.random()*100))
-            cases_to_add.append(("Negative","Autotest",func,random.random()*-100))
+            cases_to_add.append(("Autotest","Positive",func,random.random()*100))
+            cases_to_add.append(("Autotest","Negative",func,random.random()*-100))
             if 0 not in nums_done:
-                cases_to_add.append(("Zero","Autotest",func,0.0))
+                cases_to_add.append(("Autotest","Zero",func,0.0))
 
     else:
         mc = Multiple_args(func)

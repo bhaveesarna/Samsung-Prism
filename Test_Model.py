@@ -17,7 +17,7 @@ class Test:
 
 
     def serialize(self) -> None:
-        return f'TEST({self.test_suite_name}, {self.test_name}){{\n{self.serialize_assertions()}}}'
+        return f'TEST({self.test_name}, {self.test_suite_name}){{\n{self.serialize_assertions()}}}'
 
 class assertion:
     def __init__(self,assertion_type,params) -> None:
