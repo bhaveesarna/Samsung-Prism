@@ -7,7 +7,7 @@ class CCGenerator:
     
     def write_test(self,test: Test):
         f = open(f'{self.file}','a+')
-        f.write('\n ')
+        f.write('\n')
         f.write(test.serialize())
     
     def write_Quicktest(self,time,hfile):
