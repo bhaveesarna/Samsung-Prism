@@ -10,14 +10,14 @@ int add_nums(float n, int m) {
   else return m+m;
 }
 
-int return_greater_character(char n) {
+char return_greater_character(char n) {
   switch(n){
     case 'a':
-      return 1;
+      return 'b';
     case 'b':
-      return 5;
+      return 'a';
   }
-  return 0;
+  return 'c';
 }
 
 
